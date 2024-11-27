@@ -33,6 +33,34 @@ TENANT_ID=your_tenant_id
 
 ## Configuration
 
+```
+Alter-oferty-mailowe/
+├── src/                      # Source files
+│   ├── config/              # Configuration files
+│   │   └── environment.ts   # Environment configuration
+│   ├── interfaces/          # TypeScript interfaces
+│   │   ├── email.ts
+│   │   ├── credentials.ts
+│   │   └── graph.ts
+│   ├── services/           # Business logic services
+│   │   ├── graphClient.ts  # Microsoft Graph client setup
+│   │   └── mailService.ts  # Email fetching logic
+│   ├── utils/              # Utility functions
+│   │   ├── logger.ts
+│   │   └── fileSystem.ts
+│   └── index.ts            # Application entry point
+├── dist/                   # Compiled JavaScript files
+├── tests/                  # Test files
+├── data/                   # Output directory for emails
+├── .env                    # Environment variables
+├── .env.example           # Example environment file
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+└── README.md
+```
+
 Make sure your Azure Application has the required API permissions in Azure Portal:
 1. Go to Azure Portal
 2. Navigate to Azure Active Directory → App registrations
