@@ -1,7 +1,27 @@
 export interface EmailData {
     subject: string;
-    body: string;
-    receivedDateTime: string;
+    content: {
+        plainText: string;    // Treść bez HTML
+        links: Array<{       // Wyekstrahowane linki
+            text: string;
+            url: string;
+        }>;
+        attachments: Array<{ // Załączniki
+            name: string;
+            url: string;
+        }>;
+    };
+    metadata: {
+        from: string;
+        to: string;
+        cc?: string[];
+        receivedDateTime: string;
+        forwardChain?: Array<{  // Historia przekazywania
+            from: string;
+            to: string;
+            date: string;
+        }>;
+    };
 }
 
 export interface MessageResponse {
@@ -10,6 +30,24 @@ export interface MessageResponse {
     body: {
         content: string;
     };
+    from: {
+        emailAddress: {
+            name: string;
+            address: string;
+        };
+    };
+    toRecipients: Array<{
+        emailAddress: {
+            name: string;
+            address: string;
+        };
+    }>;
+    ccRecipients?: Array<{
+        emailAddress: {
+            name: string;
+            address: string;
+        };
+    }>;
     receivedDateTime: string;
 }
 

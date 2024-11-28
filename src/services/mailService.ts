@@ -1,7 +1,9 @@
 import {Client} from '@microsoft/microsoft-graph-client';
 import {EmailData, MessageResponse, UserResponse} from '../interfaces/email.js';
+import {EmailParser} from '../utils/emailParser.js';
 import {saveEmailToFile} from '../utils/fileSystem.js';
-import { createLogger } from '../utils/logger.js';
+import {createLogger} from '../utils/logger.js';
+
 const logger = createLogger(import.meta.url);
 
 export class MailService {
@@ -42,12 +44,7 @@ export class MailService {
             const messages: MessageResponse[] = response.value;
 
             for (const message of messages) {
-                const emailData: EmailData = {
-                    subject: message.subject,
-                    body: message.body.content,
-                    receivedDateTime: message.receivedDateTime
-                };
-
+                const emailData = EmailParser.parse(message);
                 await saveEmailToFile(message.id, emailData);
             }
 
