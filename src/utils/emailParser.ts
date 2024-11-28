@@ -65,12 +65,22 @@ export class EmailParser {
     private static extractPlainText(html: string): string {
         try {
             logger.info('Rozpoczynam ekstrakcję tekstu...');
+            // Create the JSDOM instance without beforeParse
             const dom = new JSDOM(html, {
-                contentType: 'text/html',
+                contentType: 'text/html'
             });
+
+            // Usuń style i skrypty przed ekstrakcją tekstu
+            dom.window.document.querySelectorAll('style, script').forEach(el => el.remove());
+
             const text = dom.window.document.body?.textContent || '';
-            logger.info(`Zakończono ekstrakcję tekstu. Długość: ${text.length} znaków`);
-            return text;
+            const normalizedText = text
+                .replace(/\u00A0/g, ' ')    // Zamień NBSP na zwykłą spację
+                .replace(/\s+/g, ' ')       // Zamień wielokrotne białe znaki na pojedynczą spację
+                .trim();                    // Usuń białe znaki z początku i końca
+
+            logger.info(`Zakończono ekstrakcję tekstu. Długość: ${normalizedText.length} znaków`);
+            return normalizedText;
         } catch (error) {
             logger.error(`Błąd podczas ekstrakcji tekstu: ${error instanceof Error ? error.message : 'Unknown error'}`);
             return '[Błąd podczas ekstrakcji tekstu]';
