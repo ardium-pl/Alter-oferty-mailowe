@@ -2,6 +2,8 @@ import { Client } from '@microsoft/microsoft-graph-client';
 import { ClientSecretCredential } from '@azure/identity';
 import { Credentials } from '../interfaces/credentials.js';
 import { getCredentials } from '../config/environment.js';
+import { createLogger } from '../utils/logger.js';
+const logger = createLogger(import.meta.url);
 
 export async function initializeGraphClient(): Promise<Client> {
     const credentials: Credentials = getCredentials();
@@ -17,7 +19,7 @@ export async function initializeGraphClient(): Promise<Client> {
             try {
                 const token = await credential.getToken(['https://graph.microsoft.com/.default']);
                 if (!token?.token) {
-                    throw new Error('Failed to obtain token');
+                    logger.error('Failed to obtain token');
                 }
                 done(null, token.token);
             } catch (error) {

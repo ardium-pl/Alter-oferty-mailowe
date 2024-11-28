@@ -1,7 +1,8 @@
 import {Client} from '@microsoft/microsoft-graph-client';
 import {EmailData, MessageResponse, UserResponse} from '../interfaces/email.js';
 import {saveEmailToFile} from '../utils/fileSystem.js';
-import {logger} from '../utils/logger.js';
+import { createLogger } from '../utils/logger.js';
+const logger = createLogger(import.meta.url);
 
 export class MailService {
     constructor(private client: Client) {

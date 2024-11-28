@@ -1,10 +1,20 @@
 import { initializeGraphClient } from './services/graphClient.js';
 import { MailService } from './services/mailService.js';
 import { initializeDataDirectory } from './utils/fileSystem.js';
-import { logger } from './utils/logger.js';
+import { createLogger } from './utils/logger.js';
+const logger = createLogger(import.meta.url);
+import { resetDataDirectory } from './utils/fileSystem.js';
 
 async function main() {
     try {
+
+        const shouldReset = process.argv.includes('--reset');
+
+        if(shouldReset) {
+            await resetDataDirectory();
+            logger.info('Zresetowano folder data z zapisanymi mailami');
+            return;
+        }
         await initializeDataDirectory();
 
         const client = await initializeGraphClient();
@@ -18,7 +28,7 @@ async function main() {
             return;
         }
 
-        const selectedUser = users[0];
+        const selectedUser = users[users.length - 1];
         logger.info(`\nPobieram maile dla użytkownika: ${selectedUser.displayName}`);
         await mailService.fetchUserEmails(selectedUser.id);
 
