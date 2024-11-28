@@ -1,9 +1,9 @@
 import winston from "winston";
-import type { TransformableInfo } from 'logform';
+import type {TransformableInfo} from 'logform';
 import path from 'path';
 import chalk from 'chalk';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
 
 // Get __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -53,7 +53,7 @@ const logFormat = winston.format.combine(
     winston.format.timestamp({
         format: () => formatDateInTimeZone(new Date(), TIME_ZONE)
     }),
-    winston.format.errors({ stack: true }),
+    winston.format.errors({stack: true}),
     winston.format.splat(),
     winston.format.json()
 );

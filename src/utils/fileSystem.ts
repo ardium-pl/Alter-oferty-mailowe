@@ -1,6 +1,6 @@
 import {promises as fsPromises} from 'fs';
 import {join} from 'path';
-import {EmailData} from '../interfaces/email.js';
+import {Attachment, EmailData} from '../interfaces/email.js';
 import {createLogger} from './logger.js';
 
 const logger = createLogger(import.meta.url);
@@ -57,6 +57,30 @@ export async function resetDataDirectory(): Promise<void> {
         logger.info('Utworzono nowy pusty folder data');
     } catch (error) {
         logger.error('Błąd podczas resetowania katalogu data:', error);
+        throw error;
+    }
+}
+
+export async function saveAttachment(messageId: string, attachment: Attachment): Promise<void> {
+    try {
+        // Stworzmy folder dla zalacznikow danego maila
+        const attachmentDir = join(DATA_DIR, 'attachments', messageId);
+        await fsPromises.mkdir(attachmentDir, {recursive: true});
+
+        // Przygotuj nazwe pliku
+        const fileName = sanitizeFileName(attachment.name);
+        const filePath = join(attachmentDir, fileName);
+
+        if (attachment.contentBytes) {
+            // Zapisz zawartość załącznika do pliku jezeli jest dostępna
+            const buffer = Buffer.from(attachment.contentBytes, 'base64'); // Konwersja base64 do bufora
+            await fsPromises.writeFile(filePath, buffer);
+            logger.info(`Zapisano załącznik: ${fileName} dla wiadomości: ${messageId}`);
+        } else {
+            logger.warn(`Załącznik: ${fileName} dla wiadomości: ${messageId} nie zawiera danych`);
+        }
+    } catch (error) {
+        logger.error(`Błąd podczas zapisywania załącznika ${messageId}:`, error);
         throw error;
     }
 }

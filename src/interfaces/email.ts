@@ -1,15 +1,10 @@
 export interface EmailData {
     subject: string;
     content: {
-        plainText: string;    // Treść bez HTML
-        links: Array<{       // Wyekstrahowane linki
-            text: string;
-            url: string;
-        }>;
-        attachments: Array<{ // Załączniki
-            name: string;
-            url: string;
-        }>;
+        plainText: string;
+        links: Array<{ text: string; url: string }>;
+        attachments: Array<{ name: string; url: string }>;
+        physicalAttachments: Array<Attachment>;
     };
     metadata: {
         from: string;
@@ -22,6 +17,14 @@ export interface EmailData {
             date: string;
         }>;
     };
+}
+
+export interface Attachment {
+    id: string;
+    name: string;
+    contentType: string;
+    size: number;
+    contentBytes?: string;
 }
 
 export interface MessageResponse {
@@ -49,6 +52,7 @@ export interface MessageResponse {
         };
     }>;
     receivedDateTime: string;
+    hasAttachments: boolean; // Czy mail posiada zalaczniki
 }
 
 export interface UserResponse {

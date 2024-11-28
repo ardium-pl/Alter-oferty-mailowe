@@ -141,7 +141,8 @@ export class EmailParser {
                     // Treść bez HTML, this jest wymagane bo extractPlainText jest metodą statyczną
                     plainText: this.extractPlainText(html),
                     links: this.extractLinks(html),
-                    attachments: this.extractAttachments(html)
+                    attachments: this.extractAttachments(html),
+                    physicalAttachments: []  // Puste pole, będzie wypełnione później przez MailService
                 },
                 metadata: {
                     // Konstruowanie adresu email z nazwy i adresu
@@ -171,7 +172,8 @@ export class EmailParser {
                 content: {
                     plainText: '[Błąd podczas przetwarzania treści]',
                     links: [],
-                    attachments: []
+                    attachments: [],
+                    physicalAttachments: []  // Puste pole
                 },
                 metadata: {
                     from: 'Nieznany nadawca',

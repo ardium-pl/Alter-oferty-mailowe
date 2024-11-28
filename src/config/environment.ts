@@ -1,5 +1,5 @@
-import { config } from 'dotenv';
-import { Credentials } from '../interfaces/credentials.js';
+import {config} from 'dotenv';
+import {Credentials} from '../interfaces/credentials.js';
 
 config();
 
