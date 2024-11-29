@@ -61,10 +61,20 @@ export async function resetDataDirectory(): Promise<void> {
     }
 }
 
-export async function saveAttachment(messageId: string, attachment: Attachment): Promise<void> {
+async function getEmailFolderPath(emailSubject: string): Promise<string> {
+    const subjectFolder = emailSubject
+        ? sanitizeFileName(emailSubject)
+        : 'no_subject';
+    const folderPath = join(DATA_DIR, subjectFolder);
+    await fsPromises.mkdir(folderPath, {recursive: true});
+    return folderPath;
+}
+
+export async function saveAttachment(messageId: string, emailSubject: string, attachment: Attachment): Promise<void> {
     try {
-        // Stworzmy folder dla zalacznikow danego maila
-        const attachmentDir = join(DATA_DIR, 'attachments', messageId);
+        // Uzywamy tej samej nazwy folderu co temat maila
+        const emailFolderPath = await getEmailFolderPath(emailSubject);
+        const attachmentDir = join(emailFolderPath, 'attachments', messageId);
         await fsPromises.mkdir(attachmentDir, {recursive: true});
 
         // Przygotuj nazwe pliku
@@ -87,18 +97,7 @@ export async function saveAttachment(messageId: string, attachment: Attachment):
 
 export async function saveEmailToFile(messageId: string, emailData: EmailData): Promise<void> {
     try {
-        // Utwórz nazwę folderu na podstawie tematu
-        const subjectFolder = emailData.subject
-            ? sanitizeFileName(emailData.subject)
-            : 'no_subject';
-
-        // Stwórz ścieżkę do folderu
-        const folderPath = join(DATA_DIR, subjectFolder);
-
-        // Utwórz folder jeśli nie istnieje
-        await fsPromises.mkdir(folderPath, {recursive: true});
-
-        // Wygeneruj unikalną nazwę pliku bazując na temacie
+        const folderPath = await getEmailFolderPath(emailData.subject);
         const fileName = await generateUniqueFileName(
             folderPath,
             `${emailData.subject}_${new Date(emailData.metadata.receivedDateTime).toISOString().split('T')[0]}`
@@ -112,9 +111,8 @@ export async function saveEmailToFile(messageId: string, emailData: EmailData): 
             'utf-8'
         );
 
-        logger.info(`Zapisano wiadomość: ${fileName} w folderze: ${subjectFolder}`);
+        logger.info(`Zapisano wiadomość: ${fileName}`);
     } catch (error) {
         logger.error(`Błąd podczas zapisywania wiadomości ${messageId}:`, error);
-        throw error;
     }
 }
