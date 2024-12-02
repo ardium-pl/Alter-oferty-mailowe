@@ -74,7 +74,7 @@ export async function saveAttachment(messageId: string, emailSubject: string, at
     try {
         // Uzywamy tej samej nazwy folderu co temat maila
         const emailFolderPath = await getEmailFolderPath(emailSubject);
-        const attachmentDir = join(emailFolderPath, 'attachments', messageId);
+        const attachmentDir = join(emailFolderPath, 'attachments');
         await fsPromises.mkdir(attachmentDir, {recursive: true});
 
         // Przygotuj nazwe pliku

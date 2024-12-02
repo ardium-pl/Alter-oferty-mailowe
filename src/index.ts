@@ -1,9 +1,7 @@
 import { initializeGraphClient } from './services/graphClient.js';
 import { MailService } from './services/mailService.js';
-import { initializeDataDirectory } from './utils/fileSystem.js';
 import { createLogger } from './utils/logger.js';
 const logger = createLogger(import.meta.url);
-import { resetDataDirectory } from './utils/fileSystem.js';
 
 async function main() {
     try {
@@ -43,6 +41,7 @@ async function main() {
         const selectedUser = users[users.length - 1];
         logger.info(`\nPobieram maile dla użytkownika: ${selectedUser.displayName}`);
         await mailService.fetchUserEmails(selectedUser.id);
+
 
     } catch (error) {
         logger.error('Wystąpił błąd:', error);

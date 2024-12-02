@@ -1,4 +1,6 @@
 data/
+output-text/
+images/
 
 # Logs
 logs
