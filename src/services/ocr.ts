@@ -5,10 +5,6 @@ import path from "path";
 import { deleteFile, convertPdfToImages } from "../utils/ocrHelpers";
 import { logger } from "../utils/logger";
 
-export type OcrResult = {
-  googleVisionText: string;
-};
-
 export class Ocr {
   private static readonly VISION_AUTH = {
     credentials: {
@@ -49,7 +45,7 @@ export class Ocr {
         imageFilePaths.map(async (imageFilePath): Promise<string> => {
           const ocrResult = await this.fileOcr(imageFilePath);
           if (ocrResult) {
-            return ocrResult.googleVisionText;
+            return ocrResult;
           } else {
             logger.warn(`No text found in image: ${imageFilePath}`);
             return "";
@@ -77,7 +73,7 @@ export class Ocr {
     }
   }
 
-  public async fileOcr(imageFilePath: string): Promise<OcrResult | null> {
+  public async fileOcr(imageFilePath: string): Promise<string | null> {
     const client = new vision.ImageAnnotatorClient(Ocr.VISION_AUTH);
 
     logger.info(` 🕶️ Processing image with Google Vision: ${imageFilePath}`);
@@ -92,7 +88,7 @@ export class Ocr {
       }
 
       logger.info(` 💚 Successfully processed image ${imageFilePath}`);
-      return { googleVisionText };
+      return  googleVisionText ;
     } catch (err: any) {
       logger.error(`Error during Google Vision OCR processing: ${err.message}`);
       return null;
